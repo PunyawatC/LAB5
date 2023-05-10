@@ -132,89 +132,89 @@ int main(void)
   {
     /* USER CODE END WHILE */
 	  static uint32_t timestamp = 0;
-	  if(HAL_GetTick()>timestamp)
-	  {
-		  if(Hz>0){
-			  time = 500/Hz;
-			  HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
-		  }
-		  timestamp = HAL_GetTick()+time;
+	 	  if(HAL_GetTick()>timestamp)
+	 	  {
+	 		  if(Hz>0){
+	 			  time = 500/Hz;
+	 			  HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
+	 		  }
+	 		  timestamp = HAL_GetTick()+time;
 
-	  }
-	  switch(state)
-	  {
-	  case 0:
-		 HAL_Delay(10);
-		 HAL_UART_Transmit_IT(&huart2, menuStart, strlen((char*)menuStart));
-		 state = 1;
-	   break;
-	  case 1:
-		 if(RxBuffer[0] == '0')
-		 {
-		 HAL_Delay(10);
-	     HAL_UART_Transmit_IT(&huart2, menuLED, strlen((char*)menuLED));
-	     state = 2;
-		 }
-		 else if(RxBuffer[0] == '1')
-		 {
-		 HAL_Delay(10);
-	     HAL_UART_Transmit_IT(&huart2, menuButton, strlen((char*)menuButton));
-	     state = 3;
-		 }
-	   break;
-	  case 2://LED
-		  if(RxBuffer[0] == 'a')
-		 		  {
-		 			Hz += 1;
-		 			state = 2;
-		 			RxBuffer[0] = '0';
-		 		  }
-		  if(RxBuffer[0] == 's')
-		  		 {
-			        Hz -= 1;
-			        state = 2;
-			        RxBuffer[0] = '0';
-			        if(Hz <= 0)
-			        {
-			        	Hz =0;
-			        }
-		  		 }
-		  if(RxBuffer[0] == 'd')
-		  		 {
-			     Hz =0;
-			     if(ledstate == 0)
-			     {
-			     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-			     ledstate = 1 ;
-			     }
-			     else if(ledstate == 1)
-			     {
-			     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-			     ledstate = 0 ;
-			     }
-			     RxBuffer[0] = '0';
-		  		 }
+	 	  }
+	 	  switch(state)
+	 	  {
+	 	  case 0:
+	 		 HAL_Delay(10);
+	 		 HAL_UART_Transmit_IT(&huart2, menuStart, strlen((char*)menuStart));
+	 		 state = 1;
+	 	   break;
+	 	  case 1:
+	 		 if(RxBuffer[0] == '0')
+	 		 {
+	 		 HAL_Delay(10);
+	 	     HAL_UART_Transmit_IT(&huart2, menuLED, strlen((char*)menuLED));
+	 	     state = 2;
+	 		 }
+	 		 else if(RxBuffer[0] == '1')
+	 		 {
+	 		 HAL_Delay(10);
+	 	     HAL_UART_Transmit_IT(&huart2, menuButton, strlen((char*)menuButton));
+	 	     state = 3;
+	 		 }
+	 	   break;
+	 	  case 2://LED
+	 		  if(RxBuffer[0] == 'a')
+	 		 		  {
+	 		 			Hz += 1;
+	 		 			state = 2;
+	 		 			RxBuffer[0] = '0';
+	 		 		  }
+	 		  if(RxBuffer[0] == 's')
+	 		  		 {
+	 			        Hz -= 1;
+	 			        state = 2;
+	 			        RxBuffer[0] = '0';
+	 			        if(Hz <= 0)
+	 			        {
+	 			        	Hz =0;
+	 			        }
+	 		  		 }
+	 		  if(RxBuffer[0] == 'd')
+	 		  		 {
+	 			     Hz =0;
+	 			     if(ledstate == 0)
+	 			     {
+	 			     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	 			     ledstate = 1 ;
+	 			     }
+	 			     else if(ledstate == 1)
+	 			     {
+	 			     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+	 			     ledstate = 0 ;
+	 			     }
+	 			     RxBuffer[0] = '0';
+	 		  		 }
 
-		  if(RxBuffer[0] == 'x')
-		  {
-			  state = 0;
-		  }
-	  break;
-	  case 3://Button
+	 		  if(RxBuffer[0] == 'x')
+	 		  {
+	 			  state = 0;
+	 		  }
+	 	  break;
+	 	  case 3://Button
 
-		  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
-			  HAL_Delay(50);
-			  HAL_UART_Transmit_IT(&huart2, buttonUnPress, strlen((char*)buttonUnPress));
-		          } else {
-		        	HAL_Delay(50);
-		        	HAL_UART_Transmit_IT(&huart2, buttonPress, strlen((char*)buttonPress));
-		          }
-		  if(RxBuffer[0] == 'x')
-		  {
-			  state = 0;
-		  }
-	  break;
-	  }
+	 		  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
+	 			  HAL_Delay(50);
+	 			  HAL_UART_Transmit_IT(&huart2, buttonUnPress, strlen((char*)buttonUnPress));
+	 		          } else {
+	 		        	HAL_Delay(50);
+	 		        	HAL_UART_Transmit_IT(&huart2, buttonPress, strlen((char*)buttonPress));
+	 		          }
+	 		  if(RxBuffer[0] == 'x')
+	 		  {
+	 			  state = 0;
+	 		  }
+	 	  break;
+	 	  }
     /* USER CODE BEGIN 3 */
 
   }
@@ -283,7 +283,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 57600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
