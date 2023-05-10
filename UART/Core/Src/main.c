@@ -67,7 +67,10 @@ uint8_t menuButton[500] = "=====================================================
 					      "s:if button press/unpress show button status \r\n"
 		                  "=====================================================\r\n";
 
+uint8_t buttonPress[20] = "press\r\n";
+uint8_t buttonUnPress[20] = "Unpress\r\n";
 
+int ledstate = 0;
 int8_t Hz=0;
 uint16_t time=0;
 /* USER CODE END PV */
@@ -180,10 +183,20 @@ int main(void)
 		  		 }
 		  if(RxBuffer[0] == 'd')
 		  		 {
-			  Hz =0;
-
-			  state = 2;
+			     Hz =0;
+			     if(ledstate == 0)
+			     {
+			     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+			     ledstate = 1 ;
+			     }
+			     else if(ledstate == 1)
+			     {
+			     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+			     ledstate = 0 ;
+			     }
+			     RxBuffer[0] = '0';
 		  		 }
+
 		  if(RxBuffer[0] == 'x')
 		  {
 			  state = 0;
@@ -191,6 +204,15 @@ int main(void)
 	  }
 	  case 3://Button
 	  {
+
+		  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
+			  HAL_UART_Transmit_IT(&huart2, buttonUnPress, strlen((char*)buttonUnPress));
+			  RxBuffer[0] = '0';
+		          } else {
+		        	HAL_UART_Transmit_IT(&huart2, buttonPress, strlen((char*)buttonPress));
+		        	RxBuffer[0] = '0';
+		          }
+
 
 		  if(RxBuffer[0] == 'x')
 		  {
