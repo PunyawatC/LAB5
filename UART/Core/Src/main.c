@@ -163,8 +163,6 @@ int main(void)
 		 }
 	   break;
 	  case 2://LED
-	  {
-
 		  if(RxBuffer[0] == 'a')
 		 		  {
 		 			Hz += 1;
@@ -201,24 +199,21 @@ int main(void)
 		  {
 			  state = 0;
 		  }
-	  }
+	  break;
 	  case 3://Button
-	  {
 
 		  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
+			  HAL_Delay(50);
 			  HAL_UART_Transmit_IT(&huart2, buttonUnPress, strlen((char*)buttonUnPress));
-			  RxBuffer[0] = '0';
 		          } else {
+		        	HAL_Delay(50);
 		        	HAL_UART_Transmit_IT(&huart2, buttonPress, strlen((char*)buttonPress));
-		        	RxBuffer[0] = '0';
 		          }
-
-
 		  if(RxBuffer[0] == 'x')
 		  {
 			  state = 0;
 		  }
-	  }
+	  break;
 	  }
     /* USER CODE BEGIN 3 */
 
